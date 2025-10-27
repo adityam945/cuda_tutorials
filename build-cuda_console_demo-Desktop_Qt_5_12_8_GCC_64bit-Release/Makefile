@@ -52,9 +52,13 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../cuda_console_demo/main.cpp 
+SOURCES       = ../cuda_console_demo/main.cpp \
+		../cuda_console_demo/worker/worker_entry.cpp \
+		../cuda_console_demo/worker/queue.cpp 
 OBJECTS       = /home/aditya/all_my_work/cuda/build-cuda_console_demo-Desktop_Qt_5_12_8_GCC_64bit-Release/cuda/kernels.o \
-		main.o
+		main.o \
+		worker_entry.o \
+		queue.o
 DIST          = ../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/common/unix.conf \
 		../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/common/linux.conf \
@@ -228,7 +232,9 @@ DIST          = ../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/features/exceptions.prf \
 		../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/features/yacc.prf \
 		../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/features/lex.prf \
-		../cuda_console_demo/cuda_console_demo.pro  ../cuda_console_demo/main.cpp
+		../cuda_console_demo/cuda_console_demo.pro  ../cuda_console_demo/main.cpp \
+		../cuda_console_demo/worker/worker_entry.cpp \
+		../cuda_console_demo/worker/queue.cpp
 QMAKE_TARGET  = cuda_console_demo
 DESTDIR       = 
 TARGET        = cuda_console_demo
@@ -604,7 +610,7 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../Qt5.12.8/5.12.8/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../cuda_console_demo/main.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../cuda_console_demo/main.cpp ../cuda_console_demo/worker/worker_entry.cpp ../cuda_console_demo/worker/queue.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -655,8 +661,17 @@ compiler_clean: compiler_moc_predefs_clean
 
 ####### Compile
 
-main.o: ../cuda_console_demo/main.cpp 
+main.o: ../cuda_console_demo/main.cpp ../cuda_console_demo/worker/worker_api.h \
+		../cuda_console_demo/worker/queue.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../cuda_console_demo/main.cpp
+
+worker_entry.o: ../cuda_console_demo/worker/worker_entry.cpp ../cuda_console_demo/worker/worker_api.h \
+		../cuda_console_demo/worker/queue.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worker_entry.o ../cuda_console_demo/worker/worker_entry.cpp
+
+queue.o: ../cuda_console_demo/worker/queue.cpp ../cuda_console_demo/worker/queue.h \
+		../cuda_console_demo/worker/worker_api.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o queue.o ../cuda_console_demo/worker/queue.cpp
 
 ####### Install
 

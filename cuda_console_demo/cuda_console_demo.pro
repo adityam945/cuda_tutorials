@@ -5,6 +5,8 @@ CONFIG -= app_bundle
 TARGET = cuda_console_demo
 
 SOURCES += main.cpp
+SOURCES += worker/worker_entry.cpp \
+           worker/queue.cpp
 
 # --- 1. CUDA Environment Setup (Confirmed Path) ---
 CUDA_DIR = /usr/local/cuda-13.0
@@ -13,6 +15,7 @@ INCLUDEPATH += $$CUDA_DIR/include
 # Link the CUDA Runtime Library
 LIBS += -L$$CUDA_DIR/lib64 -lcudart
 LIBS += -lstdc++
+LIBS += -lpthread
 
 # --- 2. Manual CUDA Compilation (Bypassing QMAKE_EXTRA_COMPILERS) ---
 # Define paths
